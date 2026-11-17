@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>冲刺作战计划 · 刺与泡沫</title>
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 56px 28px 96px;
+  background: #ffffff; color: #1f2933;
+  font: 16px/1.78 "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  max-width: 900px; margin-left: auto; margin-right: auto;
+  -webkit-font-smoothing: antialiased;
+}
+h1 { font-size: 2em; line-height: 1.3; margin: 0 0 .8em; padding-bottom: .4em; border-bottom: 2px solid #1f2933; letter-spacing: .02em; }
+h2 { font-size: 1.35em; margin: 2.6em 0 .9em; padding-left: 12px; border-left: 5px solid #e0432f; line-height: 1.4; }
+h3 { font-size: 1.1em; margin: 2em 0 .6em; color: #111827; }
+h4 { font-size: 1em; margin: 1.6em 0 .5em; }
+p { margin: .8em 0; }
+strong { color: #111827; }
+hr { border: none; border-top: 1px solid #e5e9ef; margin: 2.6em 0; }
+a { color: #c2412d; }
+ul, ol { padding-left: 1.5em; }
+li { margin: .35em 0; }
+table { border-collapse: collapse; width: 100%; margin: 1.2em 0; font-size: .9em; }
+th, td { border: 1px solid #e1e7ee; padding: 9px 12px; text-align: left; vertical-align: top; }
+th { background: #f6f8fa; font-weight: 700; white-space: nowrap; }
+tr:nth-child(even) td { background: #fcfdfe; }
+code { background: #f2f4f7; padding: 2px 6px; border-radius: 5px; font-size: .9em;
+       font-family: "JetBrains Mono", Consolas, "Courier New", monospace; color: #b3301c; }
+pre { background: #0f1720; color: #e6edf3; padding: 16px 18px; border-radius: 10px;
+      overflow-x: auto; line-height: 1.55; font-size: .86em; }
+pre code { background: none; color: inherit; padding: 0; }
+blockquote { margin: 1.2em 0; padding: 12px 18px; background: #fffbf0;
+             border-left: 4px solid #f2b84b; color: #4a3a10; }
+blockquote p { margin: .2em 0; }
+.doc-nav { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 36px; font-size: .88em; }
+.doc-nav a { text-decoration: none; padding: 6px 14px; border: 1px solid #e1e7ee;
+             border-radius: 999px; color: #374151; }
+.doc-nav a:hover { border-color: #c2412d; color: #c2412d; }
+.doc-nav a.active { background: #1f2933; color: #fff; border-color: #1f2933; }
+.foot { margin-top: 64px; padding-top: 18px; border-top: 1px solid #e5e9ef; color: #8a94a3; font-size: .82em; }
+@media print {
+  body { padding: 0; max-width: none; font-size: 12pt; }
+  .doc-nav { display: none; }
+  h2 { page-break-after: avoid; }
+  table, pre, blockquote { page-break-inside: avoid; }
+}
+</style></head>
+<body>
+<nav class="doc-nav">
+  <a href="index.html">文档目录</a>
+  <a href="PRD.html">PRD 产品需求</a>
+  <a href="PLAN.html" class="active">冲刺作战计划</a>
+</nav>
+<h1>冲刺作战计划 · 刺与泡沫 v3.1</h1>
+<blockquote>
+<p><strong>先看这一句</strong>：现在是 11/17（周二）14:50，我们不是从零开始。主线已经能从头演到尾，接下来只做三件事——<strong>把演示脚本改对、把小抄的现场表现验一遍、把翻车风险堵掉</strong>。<br>
+这份文件用大白话写。A（技术）和 B（内容）各看自己那一列，不用读对方的。</p>
+</blockquote>
+<hr>
+<h2>0. 现在打开页面就能看到什么（已经跑通）</h2>
+<ol>
+<li>输入一句硬话 → 对方回嘴，同时给出「策略标签 + 防御分 1–5 + 潜台词」。</li>
+<li>连续三句「要求/解释」且分数一直 ≥4 → <strong>Agent 跳出角色叫停一次</strong>（一场只叫一次，不会每轮都烦你）。</li>
+<li>防御 ≥4 时，右栏出现<strong>小抄卡片</strong>：「你可以这么说：___」，<strong>点一下「就用这句发过去」就替你发出去</strong>，不用再打字。</li>
+<li>照着小抄说 → 分数掉下来，曲线能看见落差。</li>
+<li>打开【沟通体检报告】→ 全屏弹窗：走势 + 策略饼图 + 一句话结论；能导出 Markdown（报告里带「小抄」这一列）。</li>
+<li>4 个场景随便切；聊多少轮都行；刷新不丢；重开能接着聊；上次来过，开场会主动提一句「上次从几分走到几分」。</li>
+</ol>
+<p><strong>截至 14:50 的进度</strong>：小抄三层都通了——本地规则、模型润色（真机连测 3 次，3 次都出了模型版）、生成一次存库；提示词已按场景字段渲染（老板、许飞不再串味）；没用的 <code>copyline.py</code> 已删；自动测试补了 3 条（每轮都写、右栏同一句、按钮存在）。</p>
+<p><strong>今天还剩</strong>：7 条验收在真机上走一遍、补 3 条测试（刷新不变 / 2 档不显示 / 开场问候）、四个测试全绿、4 个场景各拍一张小抄实图备用。</p>
+<hr>
+<h2>1. 「小抄」到底是什么（B 必看，答辩要讲）</h2>
+<p>用户说一句硬的，AI 不只回嘴，还给一张卡片：<strong>「你可以这么说：___」</strong>，点一下就直接发给对方。</p>
+<p>它不是提前写死的四句——那是上一版的 bug，已经改掉了。现在它做三件事：</p>
+<ol>
+<li><strong>看档位</strong>：对方现在 5 分（暴怒反击）/ 4 分（明显防御）/ 3 分（试探犹豫）/ 2 分（松口保面子）/ 1 分（卸下防备）。每一档只管一件事，比如 5 分只接住指控、不辩解；2 分给台阶、留退路。</li>
+<li><strong>抓细节</strong>：从<strong>你刚说的那句话</strong>里抓一个具体的东西（时间、地点、动作、数字），从<strong>对方刚回的那句</strong>里抓一个词。</li>
+<li><strong>换说法</strong>：三个句式轮着来，并且和上一张小抄不像。</li>
+</ol>
+<p>所以：同一场景换一句输入，卡片就变；对方换一句台词，卡片开头就变。<strong>这条可以现场演示给评委看。</strong></p>
+<p>模型只负责「润色成人话」。模型超时、返回空、说歪了，都直接退回本地规则版，<strong>卡片照样有，不会空着</strong>。</p>
+<p>每张卡片在提交那一轮就生成一次、存进数据库。所以刷新、切场景再回来、导出报告，看到的都是同一句，不会一变再变。</p>
+<hr>
+<h2>2. 两个人怎么分工</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>A（技术线）</th>
+<th>B（内容线）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一句话</td>
+<td>让产品能跑、不崩、可复现</td>
+<td>让评委听懂、记住、被打动</td>
+</tr>
+<tr>
+<td>主战场</td>
+<td><code>*.py</code>、<code>scripts/</code>、部署与录屏</td>
+<td><code>docs/</code>、<code>content/</code>、PPT、逐字稿与手卡</td>
+</tr>
+<tr>
+<td>今天交什么</td>
+<td>7 条验收 + 补 3 条测试 + 4 场景实图</td>
+<td>逐字稿「小抄」那段 + 手卡 v1 + PPT 前 3 页</td>
+</tr>
+<tr>
+<td>上台职责</td>
+<td>讲机制、点 Dashboard、兜住故障</td>
+<td>输入台词、讲痛点与「为什么不是聊天机器人」</td>
+</tr>
+</tbody>
+</table>
+<p><strong>文件所有权（唯一权威）</strong></p>
+<table>
+<thead>
+<tr>
+<th>目录 / 文件</th>
+<th>谁改</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>app.py</code> <code>agent.py</code> <code>hints.py</code> <code>scenes.py</code> <code>db.py</code> <code>models.py</code> <code>config.py</code> <code>charts.py</code> <code>coach.py</code> <code>insight.py</code> <code>theme.py</code></td>
+<td><strong>只有 A</strong></td>
+<td>B 不改代码，发现文案问题写进待办</td>
+</tr>
+<tr>
+<td><code>docs/PRD.md</code> <code>docs/PLAN.md</code> <code>docs/答辩逐字稿.md</code> <code>docs/演示手卡.md</code></td>
+<td><strong>只有 B</strong></td>
+<td>A 只读</td>
+</tr>
+<tr>
+<td><code>content/*.json</code>、PPT 文件</td>
+<td><strong>只有 B</strong></td>
+<td>台词与素材的来源</td>
+</tr>
+<tr>
+<td><code>scripts/</code></td>
+<td>A（B 可读）</td>
+<td>测试与工具</td>
+</tr>
+<tr>
+<td><code>data/</code></td>
+<td>运行时产物</td>
+<td>谁都不提交，赛前清空</td>
+</tr>
+</tbody>
+</table>
+<p><strong>三条纪律</strong></p>
+<ol>
+<li>A 合并前必须跑绿四个测试：<code>scripts/selftest.py</code>、<code>scripts/test_db.py</code>、<code>scripts/test_hints.py</code>、<code>scripts/test_app.py</code>。红了不合并、不上台。</li>
+<li>B 只写 <code>docs/</code> 和 <code>content/</code>；想改界面上的字，写进待办让 A 改。</li>
+<li>任何「顺手再加个功能」的想法，先写进 §11 待办，<strong>不许当场写代码</strong>。时间只够修，不够加。</li>
+</ol>
+<hr>
+<h2>3. 今天 11/17：到 21:00 的清单</h2>
+<table>
+<thead>
+<tr>
+<th>时间</th>
+<th>A（技术）</th>
+<th>B（内容）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>15:00–16:00</td>
+<td>① 7 条验收在真机上走一遍（见 §8 小抄清单），不过就当场修</td>
+<td>读 PRD 新的 F17 小抄一节；把逐字稿里「小抄为什么不是模板」那段写成口语（≤120 字）</td>
+</tr>
+<tr>
+<td>16:00–17:00</td>
+<td>② 补 3 条自动化测试：刷新同一轮不变、2 档不显示卡片、开场问候引用上一场</td>
+<td>演示手卡 v1：4 分钟逐秒，把小抄那 30 秒写进去（谁点、说什么、屏幕在哪）</td>
+</tr>
+<tr>
+<td>17:00–18:00</td>
+<td>③ 四个测试跑绿 + 重启服务 + 清空测试数据</td>
+<td>PPT 前 3 页：封面 / 痛点 / 机制</td>
+</tr>
+<tr>
+<td>18:00–19:30</td>
+<td>④ 4 个场景各真实出一次小抄，截图存档（答辩备用 + 检查串味）</td>
+<td>PPT 后 3 页：架构 / 场景 / 收尾</td>
+</tr>
+<tr>
+<td>19:30–20:00</td>
+<td>⑤ 完整走一遍 4 分钟，录屏留档</td>
+<td>对着录屏改手卡</td>
+</tr>
+<tr>
+<td><strong>20:00–20:30</strong></td>
+<td><strong>合流①</strong>：A 完整演一遍，B 只记卡点，不辩论</td>
+<td>同左</td>
+</tr>
+</tbody>
+</table>
+<p><strong>今天的完成标准（DoD）</strong></p>
+<ul>
+<li>四个测试全绿；服务重启后能正常打开。</li>
+<li>小抄：换输入会变、换台词会变、模型层挂掉仍有本地版、刷新不变。</li>
+<li>老板/许飞场景的小抄里不出现「长辈」「她」。</li>
+<li>真机连测 10 次，至少 8 次出模型版；不到 8 次就 <code>SAY_COPY_MODEL=0</code> 只留本地版（演示不受影响）。</li>
+<li>4 分钟能一次走完，B 记下的卡点不超过 5 个。</li>
+</ul>
+<hr>
+<h2>4. D-3 · 11/18：把小抄和「Agent 感」做实</h2>
+<table>
+<thead>
+<tr>
+<th>时段</th>
+<th>A</th>
+<th>B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10:00–13:00</td>
+<td>干预话术分级（第一次温和、第二次直接叫停）；干预后分数能回归正常</td>
+<td>逐字稿定稿：四问 + 小抄追问，全部口语，≤2 分钟能背完</td>
+</tr>
+<tr>
+<td>14:00–17:00</td>
+<td>Dashboard 视觉打磨（配色、字号、饼图不刺眼）；4 场景各出一次小抄，检查不串味</td>
+<td>手卡 v2：切成 8 个 30 秒，标「谁说、说什么、屏幕在哪」</td>
+</tr>
+<tr>
+<td>17:00–20:00</td>
+<td>记忆开场三分支（新用户 / 上次好转 / 上次崩了）+ 刷新、切场景回归</td>
+<td>4 场景台词逐句校对档位（对不对得上分数），问题列清单给 A</td>
+</tr>
+<tr>
+<td><strong>21:00–21:30</strong></td>
+<td><strong>合流②</strong>：B 独立操作一遍，A 只记录不解释</td>
+<td>同左</td>
+</tr>
+</tbody>
+</table>
+<p><strong>DoD</strong>：B 不看提示能独立走完；4 个场景的小抄都像人话、都不串味；干预在真实 API 下连跑 5 次都能触发。</p>
+<hr>
+<h2>5. D-2 · 11/19：防翻车</h2>
+<table>
+<thead>
+<tr>
+<th>时段</th>
+<th>A</th>
+<th>B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10:00–14:00</td>
+<td>故障演练四种：断网、超时、脏 JSON、<strong>模型返回空</strong>（小抄重点）。每种都要有提示且不崩，小抄都要能退回本地版</td>
+<td>手卡终版，A4 打印两份；准备 3 个「如果评委问 X」的即答</td>
+</tr>
+<tr>
+<td>14:00–18:00</td>
+<td>4 场景 × 各 10 遍压测，记录失败率，写 <code>docs/运行记录.md</code></td>
+<td>PPT 定稿</td>
+</tr>
+<tr>
+<td>18:00–21:00</td>
+<td>录备份视频（1080p，带声音，4 分钟内）</td>
+<td>配旁白；确认视频能本地播放</td>
+</tr>
+<tr>
+<td><strong>21:00–21:30</strong></td>
+<td><strong>合流③</strong>：一起看备份视频，掐表</td>
+<td>同左</td>
+</tr>
+</tbody>
+</table>
+<p><strong>DoD</strong>：备份视频存在且能播；压测失败率 0（或已记录并降级）。</p>
+<hr>
+<h2>6. D-1 · 11/20：全流程排练（别的赛道比赛日，我们只练）</h2>
+<table>
+<thead>
+<tr>
+<th>时段</th>
+<th>A</th>
+<th>B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10:00–12:00</td>
+<td>环境复位：清库、清缓存、重启、确认端口 8501</td>
+<td>检查设备：转接头、充电、热点</td>
+</tr>
+<tr>
+<td>14:00–18:00</td>
+<td>完整排练 3 遍，掐表，每遍记超时秒数</td>
+<td>同左；每遍换一段开场措辞，选最顺的</td>
+</tr>
+<tr>
+<td>18:00–21:00</td>
+<td>只修致命 bug（崩溃/白屏/按钮没反应），<strong>不加新功能</strong></td>
+<td>逐字稿背到脱稿</td>
+</tr>
+</tbody>
+</table>
+<p><strong>DoD</strong>：3 遍全部 ≤4:00；能脱稿；A 能一句话说清「为什么这是 Agent」。</p>
+<hr>
+<h2>7. D0 · 11/21：比赛日</h2>
+<table>
+<thead>
+<tr>
+<th>时间</th>
+<th>事项</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>上午</td>
+<td>游园会初筛：展位循环 90 秒版（只演 刺竖起 → 干预 → 小抄 → 装泡沫）</td>
+</tr>
+<tr>
+<td>入场前 30 分钟</td>
+<td>清库 → 重启 → 真机跑一次 → 打开备份视频备用</td>
+</tr>
+<tr>
+<td>下午</td>
+<td>正式路演 4 分钟 + 问答 1–2 分钟</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2>8. 上台前 Checklist（打印，逐项打勾）</h2>
+<p><strong>小抄（这次新增，最容易翻车）</strong></p>
+<ul>
+<li>☐ 说一句硬话 → 5/5 红条拉满 → 右栏出现小抄卡片，读起来像人话</li>
+<li>☐ 同一场景换输入（「必须装」vs「我下周出差」）→ 卡片不一样，且能指回你原话里的细节</li>
+<li>☐ 她最后一句不同（「你别管我」vs「你要真惦记我」）→ 卡片开头不同</li>
+<li>☐ 5 档 vs 2 档 → 写法不同（5 不辩解，2 给台阶）</li>
+<li>☐ 断网 / 模型返回空 → 卡片仍在（本地规则版）</li>
+<li>☐ 刷新页面 → 同一轮卡片不变</li>
+<li>☐ 老板、许飞场景各出一次卡片 → 没有「长辈」「她」这种串味词</li>
+</ul>
+<p><strong>主流程</strong></p>
+<ul>
+<li>☐ 投影上能看清防御分与进度条（后排视角实测）</li>
+<li>☐ 连续 3 次要求/解释 → 只叫停一次，引用的是你真说过的那句</li>
+<li>☐ 「我知道你能行」→ 2/5 绿条出现，曲线有落差</li>
+<li>☐ 全屏 Dashboard 能打开，饼图和洞察正常</li>
+<li>☐ 挚友场景能切，「我们和好吧」会卡在 3 分（问答备用）</li>
+<li>☐ 断网时界面有提示条且不崩溃</li>
+<li>☐ 备份视频能本地播放（不依赖网络）</li>
+<li>☐ B 能脱稿讲完答辩四问，≤2 分钟</li>
+<li>☐ 全流程 ≤4:00，连排 3 遍稳定</li>
+<li>☐ 侧栏「清空历史与画像」已执行（别让评委看到测试数据）</li>
+</ul>
+<hr>
+<h2>9. 时间不够就按这个顺序砍（别自己发挥）</h2>
+<ol>
+<li>砍<strong>模型润色层</strong>：只留本地规则小抄。今天就能砍，因为本地版一直在跑，卡片不会没。</li>
+<li>砍<strong>跨会话记忆开场</strong>（F15）：讲的时候用嘴说「它会记得」，不演示。</li>
+<li>砍<strong>全屏 Dashboard</strong>（F14）：退回侧栏画像，口播「为了演示稳定切到侧边视图」。</li>
+<li>砍<strong>挚友场景</strong>：只留在问答里口头描述。</li>
+<li>砍<strong>无限聊天</strong>：回到两轮，用「改一版」按钮。</li>
+</ol>
+<p><strong>底线（永远不砍）</strong>：输入一句话 → 回弹带策略与分数 → 出现小抄 → 换一句 → 分数下降 → 曲线可见。</p>
+<hr>
+<h2>10. 每天 21:00 对表（30 分钟，不许超）</h2>
+<ol>
+<li><strong>A 演示</strong>（8 分钟）：只演今天改的那条链，不演全部。</li>
+<li><strong>B 操作</strong>（8 分钟）：B 自己点，A 闭嘴记录卡点。</li>
+<li><strong>对表</strong>（8 分钟）：明天两人各做什么，写进 §3–§6。</li>
+<li><strong>砍需求</strong>（6 分钟）：落后就按 §9 砍，当场定，不隔夜。</li>
+</ol>
+<hr>
+<h2>11. 待办池（想到就写这里，不许当场写代码）</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>想法</th>
+<th>谁提</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>音效：防御条下降时「啵」一声</td>
+<td></td>
+<td>待评估（大概率不做，干扰讲解）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>4 分钟压成 90 秒展位循环版</td>
+<td></td>
+<td>D-2 决定</td>
+</tr>
+<tr>
+<td>3</td>
+<td>挚友场景做成「双视角」（你也能扮演对方）</td>
+<td></td>
+<td>V4</td>
+</tr>
+<tr>
+<td>4</td>
+<td>小抄按钮加一次轻确认（现在点一下就发出去，演示时容易误点）</td>
+<td></td>
+<td>待评估，先不改</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2>12. 今天就记这三句</h2>
+<ol>
+<li><strong>A</strong>：7 条验收真机走一遍；补 3 条测试（刷新不变 / 2 档不显示 / 开场问候）；四个测试全绿；4 个场景各出一次小抄截图存档。</li>
+<li><strong>B</strong>：把「小抄为什么不是模板」讲成 120 字大白话，手卡 v1 写上小抄那 30 秒，PPT 出 6 页。</li>
+<li><strong>两个人</strong>：20:00 见，A 演一遍，B 只记卡点；21:00 前把明天要做的事写进这份文件。</li>
+</ol>
+<p class="foot">刺与泡沫（关系演练场）· 虹桥国际科技周黑客松 AI+Agent 赛道 · 本文档由 Markdown 生成，改内容请改 docs/PLAN.md</p>
+</body></html>
