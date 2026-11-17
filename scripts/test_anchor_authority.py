@@ -99,16 +99,29 @@ class AnchorAuthorityTest(unittest.TestCase):
         self.assertNotEqual(turn.reply_text, "不是台词库的话")
         self.assertIn("tier_5", turn.evidence)
 
+    def test_missing_anchor_uses_text_similarity(self) -> None:
+        # 模型没给 anchor 时，先用用户最后一句和全库台词做文本相似度；
+        # 这句故意用 tier4 台词原文，确保命中的是它而不是 tier5。
+        target = self.scene.lines_of(4)[0]
+        with fake_reply({"strategy": "要求"}):
+            turn = agent.run_turn(target.text, scene=self.scene)
+        self.assertEqual(turn.reply_text, target.text)
+        self.assertEqual(turn.defense_score, target.tier)
+        self.assertTrue(turn.degraded)
+        self.assertIn("相似度", turn.delta_reason)
+        self.assertIn("相似度兜底", turn.evidence)
+
     def test_missing_anchor_falls_back_to_tier5(self) -> None:
         with fake_reply({"strategy": "要求", "defense": 3, "reply": "模型瞎写"}):
-            turn = agent.run_turn("妈，你必须听我的。", scene=self.scene)
+            turn = agent.run_turn("zzzz", scene=self.scene)
         self.assertEqual(turn.defense_score, 5)
         self.assertEqual(turn.reply_text, self.scene.fallback_anchor().text)
         self.assertTrue(turn.degraded)
+        self.assertIn("tier5", turn.degraded_reason)
 
     def test_invalid_anchor_falls_back_to_tier5(self) -> None:
         with fake_reply({"strategy": "共情", "anchor_id": 9999}):
-            turn = agent.run_turn("我知道你难受。", scene=self.scene)
+            turn = agent.run_turn("qqqq", scene=self.scene)
         self.assertEqual(turn.defense_score, 5)
         self.assertEqual(turn.reply_text, self.scene.fallback_anchor().text)
         self.assertTrue(turn.degraded)

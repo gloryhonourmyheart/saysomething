@@ -128,6 +128,8 @@ if after:
         "",
     )
     check("报告含锚点", "tier_" in report)
+    check("报告含变化原因列", "变化原因" in report)
+    check("报告含关键句列", "关键句" in report)
     check("报告含点评", "教练点评" in report)
     check("报告含场景与记录号", "适老化改造" in report and f"#{session.id}" in report)
     print(f"      报告：{after[-1].name}（{len(report)} 字符）")

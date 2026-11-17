@@ -97,12 +97,18 @@ if fig is not None:
 
 # 降幅和回升各自一个空心圈，颜色与文案不能串。
 up_fig = charts.defense_curve(
-    [Turn("a", "b", "要求", 5), Turn("c", "d", "要求", 2), Turn("e", "f", "要求", 4)]
+    [
+        Turn("a", "b", "要求", 5),
+        Turn("c", "d", "要求", 2, key_phrase="浴室扶手"),
+        Turn("e", "f", "要求", 4, key_phrase="你怎么又来了"),
+    ]
 )
 if up_fig is not None:
     anns = [a.text for a in up_fig.layout.annotations]
     check("降幅标关键软化句", any("关键软化句" in t for t in anns), str(anns))
+    check("降幅用 key_phrase", any("浴室扶手" in t for t in anns), str(anns))
     check("回升标再次施压", any("再次施压" in t for t in anns), str(anns))
+    check("回升用 key_phrase", any("你怎么又来了" in t for t in anns), str(anns))
     check("降幅圈用绿色", any("2F6B4F" in str(a.font.color) for a in up_fig.layout.annotations))
     check("回升圈用红色", any("B8615B" in str(a.font.color) for a in up_fig.layout.annotations))
     check("两条标注各自一个圈", len(up_fig.data) == 4, f"{len(up_fig.data)} traces")

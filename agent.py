@@ -151,8 +151,8 @@ def validate_payload(payload: dict[str, Any] | None) -> tuple[str, int] | None:
     """只认策略 + 锚点编号；模型给的 reply / defense / evidence 一概不读。
 
     这是「信任危机」的根：台词、档位、反应标签必须由服务端台词库决定。
-    anchor_id 缺失或不是合法整数时返回 0，由 run_turn 直接走 tier5 兜底，
-    不再尝试用模型写的 reply 去猜档位。
+    anchor_id 缺失或不是合法整数时返回 0；run_turn 会先用用户最后一句做
+    本地文本相似度兜底，仍找不到才落 tier5。
     """
     if not payload:
         return None
@@ -249,17 +249,27 @@ def run_turn(
 
     strategy, anchor_id = parsed
     model_line = scene.anchor(anchor_id) if anchor_id else None
-    anchor_missing = model_line is None
+    similarity_line = None
 
-    # 模型没给合法 anchor：直接 tier5 兜底，不拿模型写的 reply 猜档位。
-    line = model_line or scene.fallback_anchor()
+    # 模型没给合法 anchor：先按用户最后一句做一次本地文本相似度兜底。
+    # 这一层只决定「用哪句台词」，不改变模型给的 strategy；如果相似度也不足，
+    # 才落到绝对稳定的 tier5。这样既保留「找不到锚点先找最像的」，
+    # 又不会让模型自己写 reply 绕过台词库。
+    if model_line is None:
+        similarity_line = scene.match_anchor(user_text, min_overlap=3)
+    line = model_line or similarity_line or scene.fallback_anchor()
+    anchor_missing = model_line is None
+    similarity_used = model_line is None and similarity_line is not None
+
     prev = history[-1].defense_score if history else None
 
-    if anchor_missing:
+    if anchor_missing and not similarity_used:
         final_score = line.tier
         delta_reason = "模型未给合法 anchor_id，直接 tier5 兜底"
     else:
         final_score, delta_reason = rules.constrain_defense(prev, strategy, line.tier)
+        if similarity_used:
+            delta_reason = f"模型未给合法 anchor_id，按文本相似度命中；{delta_reason}"
 
     # 场景规则优先级最高（挚友只求和好 → 卡 3 分），可以覆盖因果约束。
     guard_note = ""
@@ -284,8 +294,17 @@ def run_turn(
     evidence = f"tier_{final_score} 锚点 {anchor_no}"
     if guard_note:
         evidence = f"{evidence} · 规则锁定：{guard_note}"[:52]
+    elif similarity_used:
+        evidence = f"{evidence} · 相似度兜底"[:52]
     elif anchor_missing:
         evidence = f"{evidence} · 兜底"
+
+    if similarity_used:
+        degraded_reason = "模型未给合法 anchor_id，已按用户最后一句做文本相似度兜底"
+    elif anchor_missing:
+        degraded_reason = "模型未给合法 anchor_id，已用 tier5 兜底"
+    else:
+        degraded_reason = ""
 
     return Turn(
         user_text=user_text,
@@ -301,7 +320,7 @@ def run_turn(
         delta_reason=delta_reason,
         key_phrase=rules.phrase(user_text),
         degraded=anchor_missing,
-        degraded_reason="模型未给合法 anchor_id，已用 tier5 兜底" if anchor_missing else "",
+        degraded_reason=degraded_reason,
         latency_ms=elapsed_ms(),
     )
 

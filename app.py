@@ -254,16 +254,18 @@ def build_report(sess: models.Session) -> tuple[Path, str]:
         "",
         "## 每一轮",
         "",
-        "| 轮次 | 你的原话 | 策略 | 防御 | 回弹 | 小抄 | 潜台词 | 锚点 | 耗时 |",
-        "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+        "| 轮次 | 你的原话 | 策略 | 防御 | 变化原因 | 关键句 | 回弹 | 小抄 | 潜台词 | 锚点 | 耗时 |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for i, turn in enumerate(sess.turns, 1):
         lines.append(
-            "| {n} | {u} | {s} | {d}/5 | {r} | {cp} | {sub} | tier_{t} | {ms}ms |".format(
+            "| {n} | {u} | {s} | {d}/5 | {dr} | {kp} | {r} | {cp} | {sub} | tier_{t} | {ms}ms |".format(
                 n=i,
                 u=turn.user_text.replace("|", "｜"),
                 s=turn.strategy,
                 d=turn.defense_score,
+                dr=(turn.delta_reason or "—").replace("|", "｜"),
+                kp=(turn.key_phrase or "—").replace("|", "｜"),
                 r=turn.reply_text.replace("|", "｜"),
                 cp=(turn.copy_text or "—").replace("|", "｜"),
                 sub=(turn.subtext or "—").replace("|", "｜"),
@@ -341,7 +343,7 @@ def status_line(turn: models.Turn, idx: int, speaker: str = "她") -> None:
     if turn.subtext:
         # 潜台词默认收起：提前剧透会替用户把「猜」这一步做掉，演练就空了。
         # 复盘页（体检报告弹窗）里统一铺开。
-        with st.expander(f"看{speaker}没说出口的话", expanded=False):
+        with st.expander(f"▸ 看{speaker}没说出口的话", expanded=False):
             st.markdown(f'<div class="sub">💡 {esc(turn.subtext)}</div>', unsafe_allow_html=True)
 
 
@@ -468,7 +470,7 @@ def _modal() -> None:
     # 潜台词统一在复盘页铺开：对话流里默认收起（别剧透），这里才给答案。
     subs = [(i, t) for i, t in enumerate(sess.turns, 1) if t.subtext]
     if subs:
-        with st.expander(f"看{scene.speaker}没说出口的话", expanded=True):
+        with st.expander(f"▸ 看{scene.speaker}没说出口的话", expanded=True):
             body = "".join(
                 f'<div class="subrow"><b>第 {i} 轮</b> · 你说「{esc(t.user_text)}」'
                 f"<br>💡 {esc(t.subtext)}</div>"

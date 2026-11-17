@@ -72,13 +72,14 @@ def _annotate_causality(fig: go.Figure, turns: Sequence, scores: list[int], *, c
 
     if drops:
         i, delta = max(drops, key=lambda p: p[1])
-        said = _html_escape((getattr(turns[i], "user_text", "") or "").strip())
+        phrase = getattr(turns[i], "key_phrase", "") or getattr(turns[i], "user_text", "")
+        said = _html_escape((phrase or "").strip())
         if compact:
             text = f"<b>关键软化句</b> · -{delta}"
         else:
-            if len(said) > 10:
-                said = said[:10] + "…"
-            text = f"<b>关键软化句</b> · 掉 {delta} 分" + (f"<br>你说「{said}」" if said else "")
+            if len(said) > 12:
+                said = said[:12] + "…"
+            text = f"<b>关键软化句</b> · 掉 {delta} 分" + (f"<br>你说：{said}" if said else "")
         _ring(fig, i, scores[i], CAUSE_DOWN, compact=compact)
         fig.add_annotation(
             x=i, y=scores[i], ax=0, ay=38,
@@ -89,10 +90,19 @@ def _annotate_causality(fig: go.Figure, turns: Sequence, scores: list[int], *, c
     if rises:
         i, delta = max(rises, key=lambda p: p[1])
         strat = _html_escape(getattr(turns[i], "strategy", "") or "")
+        phrase = getattr(turns[i], "key_phrase", "") or ""
+        said = _html_escape(phrase.strip())
         if compact:
             text = f"<b>再次施压</b> · +{delta}"
         else:
-            text = f"<b>再次施压</b> · 升 {delta} 分" + (f"<br>你用「{strat}」" if strat else "")
+            text = f"<b>再次施压</b> · 升 {delta} 分"
+            detail = f"你用「{strat}」" if strat else ""
+            if said:
+                if len(said) > 12:
+                    said = said[:12] + "…"
+                detail += f"，说：{said}"
+            if detail:
+                text += f"<br>{detail}"
         _ring(fig, i, scores[i], CAUSE_UP, compact=compact)
         fig.add_annotation(
             x=i, y=scores[i], ax=0, ay=-38,
